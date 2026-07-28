@@ -1,5 +1,6 @@
 package com.tecsup.app.micro.product.infrastructure.config;
 
+/*
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+*/
 
 /**
  * Configuración de Spring Security para product-service
@@ -31,6 +33,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  *   GET  /api/products/health      → público
  *   Actuator /actuator/health      → público
  */
+/*
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -41,55 +44,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-
                 .authorizeHttpRequests(auth -> auth
-                        // Endpoints públicos (lectura de productos)
-                        .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/products/available").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/products/health").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/products/{id}").permitAll()
-                        .requestMatchers("/actuator/health/**").permitAll()
-
-                        // Solo ADMIN puede crear, actualizar, eliminar productos
-                        .requestMatchers(HttpMethod.POST, "/api/products").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
-
-                        // Todo lo demás requiere autenticación
-                        .anyRequest().authenticated()
-                )
-
-
-                // Manejo de errores
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                            response.setContentType("application/json");
-                            response.getWriter().write("""
-                                        {
-                                            "error": "No autenticado", 
-                                            "status": 401,
-                                            "message": "Debes autenticarte para acceder a este recurso"
-                                         }
-                                    """);
-                        })
-                        .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            response.setStatus(HttpStatus.FORBIDDEN.value());
-                            response.setContentType("application/json");
-                            response.getWriter().write("""
-                                        {
-                                            "error": "Acceso denegado", 
-                                            "status": 403,
-                                            "message": "No tienes permisos para acceder a este recurso"
-                                         }
-                                    """);
-                        })
+                        .anyRequest().permitAll()
                 );
 
         return http.build();
     }
 }
+*/

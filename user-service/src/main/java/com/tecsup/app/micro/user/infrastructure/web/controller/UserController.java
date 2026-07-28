@@ -12,8 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+// import org.springframework.security.access.prepost.PreAuthorize;
+// import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public class UserController {
      * Obtiene todos los usuarios (solo ADMIN)
      */
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         log.info("REST request to get all users");
         List<User> users = userApplicationService.getAllUsers();
@@ -57,15 +57,15 @@ public class UserController {
      * Sesión 2: usa el email del JWT para identificar al usuario
      */
     @GetMapping("/me")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<UserResponse> getCurrentUser(Authentication authentication) {
-        log.info("REST request to get current user: {}", authentication.getName());
-        // authentication.getName() retorna el email (subject del JWT)
-        // Se podría buscar por email en lugar de por ID
+    // @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserResponse> getCurrentUser(/*Authentication authentication*/) {
+        // log.info("REST request to get current user: {}", authentication.getName());
+        // // authentication.getName() retorna el email (subject del JWT)
+        // // Se podría buscar por email en lugar de por ID
         return ResponseEntity.ok(
                 UserResponse.builder()
-                        .email(authentication.getName())
-                        .name(authentication.getName())
+                        // .email(authentication.getName())
+                        // .name(authentication.getName())
                         .build()
         );
     }
@@ -74,7 +74,7 @@ public class UserController {
      * Obtiene un usuario por ID (solo ADMIN)
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         log.info("REST request to get user by id: {}", id);
         User user = userApplicationService.getUserById(id);
@@ -85,7 +85,7 @@ public class UserController {
      * Crea un nuevo usuario (solo ADMIN)
      */
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
         log.info("REST request to create user: {}", request.getEmail());
         User user = userDtoMapper.toDomain(request);
@@ -98,7 +98,7 @@ public class UserController {
      * Actualiza un usuario existente (solo ADMIN)
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> updateUser(
             @PathVariable Long id,
             @Valid @RequestBody UpdateUserRequest request) {
@@ -112,7 +112,7 @@ public class UserController {
      * Elimina un usuario (solo ADMIN)
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         log.info("REST request to delete user with id: {}", id);
         userApplicationService.deleteUser(id);

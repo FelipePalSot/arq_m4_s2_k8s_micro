@@ -38,7 +38,7 @@
         </dependency>
 
         <!-- Spring Security  -->
-
+        <!-- DESHABILITADO TEMPORALMENTE PARA PRUEBAS
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -49,6 +49,7 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        -->
 
         
         <!-- PostgreSQL Driver -->

@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+// import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -63,7 +63,7 @@ public class ProductController {
      * Obtiene productos por usuario creador (autenticado)
      */
     @GetMapping("/user/{userId}")
-    @PreAuthorize("isAuthenticated()")
+    // @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<ProductResponse>> getProductsByUser(@PathVariable Long userId) {
         log.info("REST request to get products by user: {}", userId);
         List<Product> products = productApplicationService.getProductsByUser(userId);
@@ -74,7 +74,7 @@ public class ProductController {
      * Crea un nuevo producto (solo ADMIN)
      */
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody CreateProductRequest request) {
         log.info("REST request to create product: {}", request.getName());
         Product product = productDtoMapper.toDomain(request);
@@ -87,7 +87,7 @@ public class ProductController {
      * Actualiza un producto existente (solo ADMIN)
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable Long id,
             @Valid @RequestBody UpdateProductRequest request) {
@@ -101,7 +101,7 @@ public class ProductController {
      * Elimina un producto (solo ADMIN)
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         log.info("REST request to delete product with id: {}", id);
         productApplicationService.deleteProduct(id);

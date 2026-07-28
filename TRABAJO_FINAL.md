@@ -39,7 +39,7 @@ El reto principal es que el Order Service **depende de**:
      ┌────────────┐ ┌────────────┐ ┌────────────┐
      │   User     │ │  Product   │ │   Order    │
      │  Service   │ │  Service   │ │  Service   │ ◄── NUEVO
-     │   :8081    │ │   :8082    │ │   :8083    │
+     │   :8082    │ │   :8083    │ │   :8084    │
      └──────┬─────┘ └──────┬─────┘ └──────┬─────┘
             │              │              │
             │              │              │

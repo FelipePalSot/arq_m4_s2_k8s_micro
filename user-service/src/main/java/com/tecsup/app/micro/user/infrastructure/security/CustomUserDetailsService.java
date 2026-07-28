@@ -1,5 +1,6 @@
 package com.tecsup.app.micro.user.infrastructure.security;
 
+/*
 import com.tecsup.app.micro.user.infrastructure.persistence.entity.UserEntity;
 import com.tecsup.app.micro.user.infrastructure.persistence.repository.JpaUserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+*/
 
 /**
  * Servicio de autenticación que carga usuarios desde userdb (PostgreSQL)
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
  * Lee los roles desde la tabla user_roles (relación N:N).
  * Los passwords están almacenados con BCrypt en la tabla users.
  */
+/*
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -33,14 +36,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final JpaUserRepository jpaUserRepository;
 
-    /**
-     * Carga un usuario por email desde userdb.
-     * Spring Security invoca este método automáticamente durante la autenticación.
-     *
-     * @param email El email del usuario (usado como username)
-     * @return UserDetails con email, password (BCrypt) y roles
-     * @throws UsernameNotFoundException si el email no existe en la BD
-     */
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -52,8 +47,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                     return new UsernameNotFoundException("Usuario no encontrado con email: " + email);
                 });
 
-        // Convertir roles de la BD a GrantedAuthority de Spring Security
-        // Ejemplo: RoleEntity(name="ROLE_ADMIN") → SimpleGrantedAuthority("ROLE_ADMIN")
         List<GrantedAuthority> authorities = userEntity.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
@@ -71,3 +64,4 @@ public class CustomUserDetailsService implements UserDetailsService {
         );
     }
 }
+*/
