@@ -7,87 +7,255 @@
   },
   "item": [
     {
-      "name": "1. Micro User - Obtener usuarios",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:8081/api/users",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8081",
-          "path": [
-            "api",
-            "users"
-          ]
+      "name": "=== USER SERVICE (puerto 8082) ===",
+      "item": [
+        {
+          "name": "1. Micro User - Obtener usuarios",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8082/api/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8082",
+              "path": ["api", "users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Micro User - Obtener un usuario por Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8082/api/users/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8082",
+              "path": ["api", "users", "1"]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
     },
     {
-      "name": "2. Micro User - Obtener un usuario por Id",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:8081/api/users/1",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8081",
-          "path": [
-            "api",
-            "users",
-            "1"
-          ]
+      "name": "=== PRODUCT SERVICE (puerto 8083) ===",
+      "item": [
+        {
+          "name": "3. Micro Product - Obtener productos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "products"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Micro Product - Obtener producto por Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/products/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "products", "1"]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
     },
     {
-      "name": "3 Micro Product - Obtener productos",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:8082/api/products",
-          "protocol": "http",
-          "host": [
-            "localhost"
+      "name": "=== ORDER SERVICE - FLUJO COMPLETO (puerto 8084) ===",
+      "item": [
+        {
+          "name": "5. Micro Order - Listar ordenes existentes",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": ["// Paso previo: verificar que el servicio responde"],
+                "type": "text/javascript"
+              }
+            }
           ],
-          "port": "8082",
-          "path": [
-            "api",
-            "products"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "4 Micro Product - Obtener productos por usuario",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:8082/api/products/user/1",
-          "protocol": "http",
-          "host": [
-            "localhost"
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8084/api/orders",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8084",
+              "path": ["api", "orders"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6. Micro Order - Crear Orden (FLUJO PRINCIPAL)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Guardar el ID de la orden creada para usarlo en los siguientes requests",
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set('orderId', jsonData.id);",
+                  "pm.environment.set('orderNumber', jsonData.orderNumber);",
+                  "",
+                  "// Validaciones del flujo",
+                  "pm.test('Status 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test('Tiene orderNumber generado', function () {",
+                  "    pm.expect(jsonData.orderNumber).to.include('ORD-');",
+                  "});",
+                  "pm.test('Status es PENDING', function () {",
+                  "    pm.expect(jsonData.status).to.equal('PENDING');",
+                  "});",
+                  "pm.test('totalAmount calculado correctamente', function () {",
+                  "    pm.expect(jsonData.totalAmount).to.be.above(0);",
+                  "});",
+                  "pm.test('Items contienen info del producto', function () {",
+                  "    pm.expect(jsonData.items[0].product).to.have.property('name');",
+                  "    pm.expect(jsonData.items[0].unitPrice).to.be.above(0);",
+                  "    pm.expect(jsonData.items[0].subtotal).to.be.above(0);",
+                  "});",
+                  "console.log('Orden creada: ' + jsonData.orderNumber + ' | Total: ' + jsonData.totalAmount);"
+                ],
+                "type": "text/javascript"
+              }
+            }
           ],
-          "port": "8082",
-          "path": [
-            "api",
-            "products",
-            "user",
-            "1"
-          ]
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"productId\": 3,\n      \"quantity\": 1\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8084/api/orders",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8084",
+              "path": ["api", "orders"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "7. Micro Order - Obtener orden recien creada por Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('La orden tiene items', function () {",
+                  "    pm.expect(jsonData.items.length).to.be.above(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8084/api/orders/{{orderId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8084",
+              "path": ["api", "orders", "{{orderId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "8. Micro Order - Obtener ordenes del usuario 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('El usuario tiene ordenes', function () {",
+                  "    pm.expect(pm.response.json().length).to.be.above(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8084/api/orders/user/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8084",
+              "path": ["api", "orders", "user", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "9. Micro Order - Listar TODAS las ordenes (ver la nueva)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Hay ordenes en la BD', function () {",
+                  "    pm.expect(pm.response.json().length).to.be.above(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8084/api/orders",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8084",
+              "path": ["api", "orders"]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
     }
   ]
 }
