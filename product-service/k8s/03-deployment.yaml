@@ -35,7 +35,7 @@ spec:
         - name: product-service
 
           # Imagen Docker
-          image: product-service:1.0
+          image: product-service:2.0
 
           # imagePullPolicy:
           # - Never: Solo usar imagen local (desarrollo)

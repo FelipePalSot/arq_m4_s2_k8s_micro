@@ -35,7 +35,7 @@ spec:
         - name: user-service
 
           # Imagen Docker
-          image: user-service:1.0
+          image: user-service:2.0
 
           # imagePullPolicy:
           # - Never: Solo usar imagen local (desarrollo)
